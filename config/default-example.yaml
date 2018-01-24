@@ -1,0 +1,12 @@
+express:
+  port: port-num
+  debug: debug-num
+  host: host-name
+
+mongo:
+  mongo_uri: mongodb-uri
+
+loglevel: info
+
+slack:
+  token: slack-token

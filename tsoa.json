@@ -1,0 +1,7 @@
+{
+  "routes": {
+    "basePath": "/api",
+    "entryFile": "./server-src/app.ts",
+    "routesDir": "./server-src/routes"
+  }
+}
