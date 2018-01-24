@@ -1,8 +1,8 @@
-#Slack Bot v1 - NodeJS/TypeScript
+# Slack Bot v1 - NodeJS/TypeScript
 
 Just a personal project on SlackBot.
 
-#Technologies
+# Technologies
 - NodeJS
 - TypeScript
 - Mongoose
