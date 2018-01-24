@@ -36,5 +36,4 @@ export class TicketRepository implements ITicketRepository {
     public async updateTicket(id: string, updatedTicket: ITicket): Promise<ITicketResponse | MongoError> {
         return await this._ticketModel.findByIdAndUpdate(id, updatedTicket) as ITicketResponse;
     }
-
 }

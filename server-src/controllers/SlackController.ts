@@ -15,6 +15,111 @@ import {Ticket} from '../models/Ticket';
 import {MongoError} from 'mongodb';
 
 export class SlackController {
+    private static resolveMongoError(responseUrl: string, res: Response) {
+        const message: Message = {
+            text: 'Error',
+            replace_original: true,
+            attachments: [
+                {
+                    fallback: 'Your channel does not support me',
+                    callback_id: 'init_action_error',
+                    color: 'danger',
+                    title: `Error initializing Team`
+                }
+            ]
+        };
+
+        SlackController.sendMessageToUrl(responseUrl, message, res);
+    }
+
+    private static sendMessageToUrl(responseUrl: string, message: Message, res: Response) {
+        const postOptions: OptionsWithUri = {
+            uri: responseUrl,
+            method: 'POST',
+            json: message,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+
+        request(postOptions, (error, response, body) => {
+            if (error) {
+                console.log(error);
+            }
+
+            return res.status(200).end();
+        });
+
+    }
+
+    private static openDialog(actionTriggerId: string | undefined) {
+        const ticketSelectElement: SelectDialogElement = {
+            label: 'Category',
+            name: 'category',
+            type: 'select',
+            placeholder: 'Please pick a category from the list',
+            options: [
+                {
+                    label: 'Front-End',
+                    value: 'front'
+                },
+                {
+                    label: 'Back-End',
+                    value: 'back'
+                },
+                {
+                    label: 'APIs',
+                    value: 'api'
+                },
+                {
+                    label: 'Utility',
+                    value: 'utility'
+                },
+                {
+                    label: 'Facility',
+                    value: 'facility'
+                },
+                {
+                    label: 'Other',
+                    value: 'other'
+                }
+            ]
+        };
+
+        const ticketTextElement: TextDialogElement = {
+            type: 'textarea',
+            label: 'Summary',
+            name: 'summary',
+            placeholder: 'Brief description of your issue',
+            max_length: 500
+        }
+        const ticketDialog: SlackDialog = {
+            title: 'Create a Ticket',
+            callback_id: 'ticket_dialog',
+            elements: [ticketSelectElement, ticketTextElement]
+        };
+
+        const dialogOptions: DialogOptions = {
+            trigger_id: actionTriggerId,
+            dialog: ticketDialog
+        };
+
+        const dialogPostOptions: OptionsWithUri = {
+            method: 'POST',
+            uri: 'https://slack.com/api/dialog.open',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${config.get('slack.token')}`
+            },
+            json: dialogOptions
+        };
+
+        request(dialogPostOptions, (error, response, body) => {
+            if (error) {
+                console.log(error);
+            }
+        });
+    }
     private _teamRepository: ITeamRepository = new TeamRepository(Team);
     private _ticketRepository: ITicketRepository = new TicketRepository(Team, Ticket);
     private actionUrl: string = '';
@@ -76,17 +181,17 @@ export class SlackController {
         let message: Message;
         if (actionItem.value === 'no') {
             message = {
-                'text': 'Ok, bye! Call me again if you need me',
-                'thread_ts': this.actionThread,
-                'replace_original': true,
-                'delete_original': true
+                text: 'Ok, bye! Call me again if you need me',
+                thread_ts: this.actionThread,
+                replace_original: true,
+                delete_original: true
             };
             SlackController.sendMessageToUrl(responseUrl, message, res);
         } else if (actionItem.value === 'yes') {
             message = {
-                'text': 'Alright! Please tell me more about your issue',
-                'thread_ts': this.actionThread,
-                'replace_original': true
+                text: 'Alright! Please tell me more about your issue',
+                thread_ts: this.actionThread,
+                replace_original: true
             };
             SlackController.sendMessageToUrl(responseUrl, message, res);
             SlackController.openDialog(actionTriggerId);
@@ -196,111 +301,4 @@ export class SlackController {
         }
         SlackController.sendMessageToUrl(responseUrl, message, res);
     };
-
-
-    private static resolveMongoError(responseUrl: string, res: Response) {
-        const message: Message = {
-            text: 'Error',
-            replace_original: true,
-            attachments: [
-                {
-                    fallback: 'Your channel does not support me',
-                    callback_id: 'init_action_error',
-                    color: 'danger',
-                    title: `Error initializing Team`
-                }
-            ]
-        };
-
-        SlackController.sendMessageToUrl(responseUrl, message, res);
-    }
-
-    private static sendMessageToUrl(responseUrl: string, message: Message, res: Response) {
-        const postOptions: OptionsWithUri = {
-            uri: responseUrl,
-            method: 'POST',
-            json: message,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-
-        request(postOptions, (error, response, body) => {
-            if (error) {
-                console.log(error);
-            }
-
-            return res.status(200).end();
-        });
-
-    }
-
-    private static openDialog(actionTriggerId: string | undefined) {
-        const ticketDialog: SlackDialog = {
-            title: 'Create a Ticket',
-            callback_id: 'ticket_dialog',
-            elements: [
-                <SelectDialogElement>{
-                    label: 'Category',
-                    name: 'category',
-                    type: 'select',
-                    placeholder: 'Please pick a category from the list',
-                    options: [
-                        {
-                            label: 'Front-End',
-                            value: 'front'
-                        },
-                        {
-                            label: 'Back-End',
-                            value: 'back'
-                        },
-                        {
-                            label: 'APIs',
-                            value: 'api'
-                        },
-                        {
-                            label: 'Utility',
-                            value: 'utility'
-                        },
-                        {
-                            label: 'Facility',
-                            value: 'facility'
-                        },
-                        {
-                            label: 'Other',
-                            value: 'other'
-                        }
-                    ]
-                },
-                <TextDialogElement>{
-                    type: 'textarea',
-                    label: 'Summary',
-                    name: 'summary',
-                    placeholder: 'Brief description of your issue',
-                    max_length: 500
-                }
-            ]
-        };
-
-        const dialogOptions: DialogOptions = {
-            trigger_id: actionTriggerId,
-            dialog: ticketDialog
-        };
-
-        const dialogPostOptions: OptionsWithUri = {
-            method: 'POST',
-            uri: 'https://slack.com/api/dialog.open',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${config.get('slack.token')}`
-            },
-            json: dialogOptions
-        };
-
-        request(dialogPostOptions, (error, response, body) => {
-           if (error) {
-               console.log(error);
-           }
-        });
-    }
 }

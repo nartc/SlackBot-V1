@@ -1,17 +1,17 @@
 export interface SlashCommandPayload {
-    response_url:       string;
-    team_id:            string;
-    token?:             string;
-    team_domain?:       string;
-    enterprise_id?:     string;
-    enterprise_name?:   string;
-    channel_id?:        string;
-    channel_name?:      string;
-    user_id?:           string;
-    user_name?:         string;
-    command?:           string;
-    text?:              string;
-    trigger_id?:        string;
+    response_url: string;
+    team_id: string;
+    token?: string;
+    team_domain?: string;
+    enterprise_id?: string;
+    enterprise_name?: string;
+    channel_id?: string;
+    channel_name?: string;
+    user_id?: string;
+    user_name?: string;
+    command?: string;
+    text?: string;
+    trigger_id?: string;
 }
 
 export interface ActionPayload {

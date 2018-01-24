@@ -12,7 +12,7 @@ export class TicketController extends Controller {
         return {
             thrown: true,
             error: error as IMongoError,
-            message: message
+            message
         };
     }
 
