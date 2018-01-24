@@ -68,7 +68,7 @@ interface SelectElementOption {
 }
 
 interface Submission {
-    [key: string]: any;
+    [key: string]: string;
     value?: string;
 }
 

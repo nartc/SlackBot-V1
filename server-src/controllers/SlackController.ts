@@ -11,8 +11,9 @@ import {TeamRepository} from '../repositories/TeamRepository';
 import {ITeam, Team} from '../models/Team';
 import {ITicketRepository} from '../repositories/ITicketRepository';
 import {TicketRepository} from '../repositories/TicketRepository';
-import {Ticket} from '../models/Ticket';
+import {Ticket, ITicket} from '../models/Ticket';
 import {MongoError} from 'mongodb';
+import { ITicketResponse } from '../models/responses/response.index';
 
 export class SlackController {
     private static resolveMongoError(responseUrl: string, res: Response) {
@@ -121,7 +122,7 @@ export class SlackController {
         });
     }
     private _teamRepository: ITeamRepository = new TeamRepository(Team);
-    private _ticketRepository: ITicketRepository = new TicketRepository(Team, Ticket);
+    private _ticketRepository: ITicketRepository = new TicketRepository(Ticket, Team);
     private actionUrl: string = '';
     private actionThread: string = '';
 
@@ -171,8 +172,44 @@ export class SlackController {
                 await this.resolveTicketButtonActions(actionPayload, actionResponseUrl, res);
                 break;
             case 'ticket_dialog':
+                await this.resolveTicketDialogActions(actionPayload, this.actionUrl, res);
                 break;
         }
+    }
+
+    private resolveTicketDialogActions = async (actionPayload: ActionPayload, responseUrl: string, res: Response) => {
+        const actionItem = actionPayload.submission;
+        const teamId = actionPayload.team.id;
+        const team = await this._teamRepository.getTeamByTeamIdOrName(teamId, '');
+
+        if (team instanceof MongoError)
+            SlackController.resolveMongoError(responseUrl, res);
+        
+        const newTicket: ITicket = new Ticket();
+        newTicket.team = (team as ITeam)._id;
+        newTicket.category = actionItem.category;
+        newTicket.summary = actionItem.summary;
+
+        const result = await this._ticketRepository.createTicket(newTicket);
+
+        if (result instanceof MongoError)
+            SlackController.resolveMongoError(responseUrl, res);
+
+        const message: Message = {
+            text: "Success",
+            replace_original: true,
+            attachments: [
+                {
+                    text: 'You have successfully created a support ticket with ticket id `' + (result as ITicketResponse)._id + '`.\n You can later run `/uticket check-ticket {ticketId}` to check your ticket.',
+                    title: 'Great!',
+                    fallback: 'Your channel does not support me',
+                    color: 'good',
+                    callback_id: 'create_ticket_success'
+                }
+            ]
+        };
+
+        SlackController.sendMessageToUrl(responseUrl, message, res);
     }
 
     private resolveTicketButtonActions = async (actionPayload: ActionPayload, responseUrl: string, res: Response) => {

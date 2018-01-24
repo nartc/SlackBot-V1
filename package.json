@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start-dev": "nodemon ./server-build/index.js"
+    "start-dev": "nodemon ./server-build/index.js",
+    "tsc-linux": "/home/chau/.npm-global/lib/node_modules/typescript/bin/tsc",
+    "start-dev-linux": "/home/chau/.npm-global/lib/node_modules/nodemon/bin/nodemon.js ./server-build/index.js"
   },
   "author": "Chau",
   "license": "MIT",
@@ -38,6 +40,7 @@
     "@types/request": "^2.0.13",
     "@types/slack-node": "^0.1.2",
     "@types/winston": "^2.3.7",
+    "nodemon": "^1.14.11",
     "typescript": "^2.6.2"
   }
 }

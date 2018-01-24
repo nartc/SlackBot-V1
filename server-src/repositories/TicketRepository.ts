@@ -25,11 +25,7 @@ export class TicketRepository implements ITicketRepository {
         return await this._ticketModel.find(query) as ITicketResponse[];
     }
 
-    public async createTicket(newTicket: ITicket, teamName: string): Promise<ITicketResponse | MongoError> {
-        const teamQuery = {teamName};
-        const team = await this._teamModel.findOne(teamQuery);
-
-        newTicket.team = team ? team._id : null;
+    public async createTicket(newTicket: ITicket): Promise<ITicketResponse | MongoError> {
         return await this._ticketModel.create(newTicket) as ITicketResponse;
     }
 
