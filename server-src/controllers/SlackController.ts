@@ -8,12 +8,14 @@ import * as request from 'request';
 import {OptionsWithUri} from 'request';
 import {ITeamRepository} from '../repositories/ITeamRepository';
 import {TeamRepository} from '../repositories/TeamRepository';
-import {ITeam, Team} from '../models/Team';
+import {ITeam, ITeamVm, Team} from '../models/Team';
 import {ITicketRepository} from '../repositories/ITicketRepository';
 import {TicketRepository} from '../repositories/TicketRepository';
 import {Ticket, ITicket} from '../models/Ticket';
 import {MongoError} from 'mongodb';
 import { ITicketResponse } from '../models/responses/response.index';
+import {TicketHelper} from '../helpers/ticketHelper';
+import {SlackWebhook} from '../helpers/slackWebhook';
 
 export class SlackController {
     private static resolveMongoError(responseUrl: string, res: Response) {
@@ -93,7 +95,8 @@ export class SlackController {
             name: 'summary',
             placeholder: 'Brief description of your issue',
             max_length: 500
-        }
+        };
+
         const ticketDialog: SlackDialog = {
             title: 'Create a Ticket',
             callback_id: 'ticket_dialog',
@@ -125,6 +128,11 @@ export class SlackController {
     private _ticketRepository: ITicketRepository = new TicketRepository(Ticket, Team);
     private actionUrl: string = '';
     private actionThread: string = '';
+    private _slackWebhook: SlackWebhook;
+
+    constructor(slackWebhook: SlackWebhook) {
+        this._slackWebhook = slackWebhook;
+    }
 
     public async slashCommandHandler(req: Request, res: Response) {
         const responseUrl = req.body.response_url;
@@ -184,10 +192,13 @@ export class SlackController {
 
         if (team instanceof MongoError)
             SlackController.resolveMongoError(responseUrl, res);
-        
+
+        const allTicketsCount = await this._ticketRepository.getCount((team as ITeam)._id);
         const newTicket: ITicket = new Ticket();
         newTicket.team = (team as ITeam)._id;
         newTicket.category = actionItem.category;
+        newTicket.ticketNumber = 1000 + allTicketsCount.valueOf();
+        newTicket.slug = TicketHelper.generateTicketSlug(newTicket.ticketNumber.toString(), (team as ITeam));
         newTicket.summary = actionItem.summary;
 
         const result = await this._ticketRepository.createTicket(newTicket);
@@ -200,7 +211,7 @@ export class SlackController {
             replace_original: true,
             attachments: [
                 {
-                    text: 'You have successfully created a support ticket with ticket id `' + (result as ITicketResponse)._id + '`.\n You can later run `/uticket check-ticket {ticketId}` to check your ticket.',
+                    text: 'You have successfully created a support ticket with ticket id `' + (result as ITicketResponse).slug + '`.\n You can later run `/uticket check-ticket {ticketId}` to check your ticket.',
                     title: 'Great!',
                     fallback: 'Your channel does not support me',
                     color: 'good',
@@ -210,7 +221,9 @@ export class SlackController {
         };
 
         SlackController.sendMessageToUrl(responseUrl, message, res);
-    }
+        await this._slackWebhook.newTicketNotification();
+        await this._slackWebhook.postTicketDetail(config.get('slack.helper_channel_id'), result as ITicketResponse, team as ITeam);
+    };
 
     private resolveTicketButtonActions = async (actionPayload: ActionPayload, responseUrl: string, res: Response) => {
         const actionItem = actionPayload.actions[0];

@@ -14,10 +14,12 @@ import {SlackRoutes} from './routes/SlackRoutes';
 import './controllers/TeamController';
 import './controllers/TicketController';
 import {RegisterRoutes} from './routes/routes';
+import {SlackWebhook} from './helpers/slackWebhook';
 
 class App {
     public app: Application;
-    private _slackRoutes: SlackRoutes = new SlackRoutes();
+    private _slackWebhook: SlackWebhook = new SlackWebhook();
+    private _slackRoutes: SlackRoutes = new SlackRoutes(this._slackWebhook);
     private environmentHosting: string = process.env.NODE_ENV || 'Development';
 
     constructor() {

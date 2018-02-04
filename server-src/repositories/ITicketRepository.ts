@@ -7,4 +7,5 @@ export interface ITicketRepository {
     getTicketsByTeamName(teamName: string): Promise<ITicketResponse[] | MongoError>;
     createTicket(newTicket: ITicket): Promise<ITicketResponse | MongoError>;
     updateTicket(id: string, updatedTicket: ITicket): Promise<ITicketResponse | MongoError>;
+    getCount(team: string): Promise<Number>;
 }

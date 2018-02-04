@@ -6,6 +6,11 @@ const TicketSchema = new Schema({
         ref: 'Team',
         required: true
     },
+    ticketNumber: Number,
+    slug: {
+        type: String,
+        required: true
+    },
     category: String,
     summary: String,
     createdOn: {
@@ -21,6 +26,8 @@ const TicketSchema = new Schema({
 export interface ITicket extends Document {
     team?: string;
     category?: string;
+    slug?: string;
+    ticketNumber?: number;
     summary?: string;
     createdOn?: Date;
     isResolved?: boolean;
@@ -29,10 +36,44 @@ export interface ITicket extends Document {
 export interface ITicketVm {
     _id?: string;
     category?: string;
+    slug?: string;
+    ticketNumber?: number;
     summary?: string;
     createdOn?: Date;
     isResolved?: boolean;
 }
+// {
+//     label: 'Front-End',
+//         value: 'front'
+// },
+// {
+//     label: 'Back-End',
+//         value: 'back'
+// },
+// {
+//     label: 'APIs',
+//         value: 'api'
+// },
+// {
+//     label: 'Utility',
+//         value: 'utility'
+// },
+// {
+//     label: 'Facility',
+//         value: 'facility'
+// },
+// {
+//     label: 'Other',
+//         value: 'other'
+// }
+export const Category = {
+    back: 'Back-end',
+    front: 'Front-end',
+    api: 'APIs',
+    utility: 'Utility',
+    facility: 'Facility',
+    other: 'Other'
+};
 
 type TicketModel = Model<ITicket>;
 const Ticket: TicketModel = model<ITicket>('Ticket', TicketSchema);

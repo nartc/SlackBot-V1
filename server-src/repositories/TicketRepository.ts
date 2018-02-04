@@ -17,6 +17,11 @@ export class TicketRepository implements ITicketRepository {
         return await this._ticketModel.find().populate('team') as ITicketResponse[];
     }
 
+    public async getCount(team: string): Promise<Number> {
+        const query = {team};
+        return await this._ticketModel.find(query).count();
+    }
+
     public async getTicketsByTeamName(teamName: string): Promise<ITicketResponse[] | MongoError> {
         const teamQuery = {teamName};
         const team = await this._teamModel.findOne(teamQuery);

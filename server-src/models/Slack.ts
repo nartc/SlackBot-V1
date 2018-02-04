@@ -115,6 +115,29 @@ export interface MessageAttachment {
     mrkdwn?: boolean;
 }
 
+export interface WebClientMessageAttachment {
+    fallback: string;
+    color?: string;
+    pretext?: string;
+    title?: string;
+    title_link?: string;
+    text?: string;
+    fields?: [{
+        title?: string;
+        value?: string;
+        short?: boolean;
+    }];
+    image_url?: string;
+    thumb_url?: string;
+    footer?: string;
+    footer_icon?: string;
+    ts?: number;
+    author_name?: string;
+    author_link?: string;
+    author_icon?: string;
+    mrkdwn?: boolean;
+}
+
 export interface MessageAction {
     name: string;
     text: string;

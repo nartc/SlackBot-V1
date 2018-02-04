@@ -1,13 +1,14 @@
 import {Router} from 'express';
 import {SlackController} from '../controllers/SlackController';
+import {SlackWebhook} from '../helpers/slackWebhook';
 
 export class SlackRoutes {
     router: Router;
     _slackController: SlackController;
 
-    constructor() {
+    constructor(slackWebhook: SlackWebhook) {
         this.router = Router();
-        this._slackController = new SlackController();
+        this._slackController = new SlackController(slackWebhook);
         this.routes();
     }
 
