@@ -2,6 +2,9 @@
 import { Controller, ValidateParam, FieldErrors, ValidateError, TsoaRoute } from 'tsoa';
 import { TeamController } from './../controllers/TeamController';
 import { TicketController } from './../controllers/TicketController';
+import { SystemController } from './../controllers/SystemController';
+import * as passport from 'passport';
+import { expressAuthentication } from './../helpers/Passport';
 
 const models: TsoaRoute.Models = {
     "ITeamVm": {
@@ -22,6 +25,17 @@ const models: TsoaRoute.Models = {
             "createdOn": { "dataType": "datetime" },
             "isResolved": { "dataType": "boolean" },
             "team": { "ref": "ITeamVm" },
+        },
+    },
+    "ISystemAuthResponse": {
+        "properties": {
+            "authToken": { "dataType": "string", "required": true },
+        },
+    },
+    "IAuthLoginParams": {
+        "properties": {
+            "nick": { "dataType": "string", "required": true },
+            "pass": { "dataType": "string", "required": true },
         },
     },
 };
@@ -82,7 +96,50 @@ export function RegisterRoutes(app: any) {
             const promise = controller.getTicketsByTeam.apply(controller, validatedArgs);
             promiseHandler(controller, promise, response, next);
         });
+    app.post('/api/auth/auth',
+        function(request: any, response: any, next: any) {
+            const args = {
+                loginParams: { "in": "body", "name": "loginParams", "required": true, "ref": "IAuthLoginParams" },
+            };
 
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new SystemController();
+
+
+            const promise = controller.adminAuth.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/api/auth/clear/:collection',
+        authenticateMiddleware('jwt'),
+        function(request: any, response: any, next: any) {
+            const args = {
+                expressRequest: { "in": "request", "name": "expressRequest", "required": true, "dataType": "object" },
+                collection: { "in": "path", "name": "collection", "required": true, "dataType": "string" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new SystemController();
+
+
+            const promise = controller.clearDatabase.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, next);
+        });
+
+    function authenticateMiddleware(strategy: string) {
+        return passport.authenticate(strategy, { session: false });
+    }
 
     function promiseHandler(controllerObj: any, promise: any, response: any, next: any) {
         return Promise.resolve(promise)

@@ -12,11 +12,11 @@ import {logger} from './helpers/WinstonLogger';
 debug('ts-express:server');
 
 const port = normalizePort(process.env.PORT || config.get('express.port'));
-App.set('port', port);
+App.app.set('port', port);
 
 console.log(`Server listening on port ${port}`);
 
-const server = http.createServer(App);
+const server = http.createServer(App.app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);

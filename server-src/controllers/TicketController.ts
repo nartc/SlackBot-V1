@@ -1,4 +1,4 @@
-import {Controller, Get, Path, Route} from 'tsoa';
+import {Controller, Get, Path, Route, Tags} from 'tsoa';
 import {IErrorResponse, IMongoError, ITicketResponse} from '../models/responses/response.index';
 import {MongoError} from 'mongodb';
 import {ITicketRepository} from '../repositories/ITicketRepository';
@@ -7,6 +7,7 @@ import {Ticket} from '../models/Ticket';
 import {Team} from '../models/Team';
 
 @Route('tickets')
+@Tags('Operations')
 export class TicketController extends Controller {
     private static resolveErrorResponse(error: MongoError | null, message: string): IErrorResponse {
         return {
