@@ -55,7 +55,6 @@
 	},
 	"info": {
 		"description": "Documentation of APIs utilizing data gathered from uTicket Slack bot",
-		"author": "Nartc",
 		"version": "1.0.0",
 		"title": "uTicket Slack Bot"
 	},
