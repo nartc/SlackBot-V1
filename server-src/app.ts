@@ -1,7 +1,7 @@
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as express from 'express';
-import {Application} from 'express';
+import {Application, Request, Response} from 'express';
 import * as mongoose from 'mongoose';
 import {Mongoose} from 'mongoose';
 import * as logger from 'morgan';
@@ -64,7 +64,10 @@ class App {
         // SwaggerUI
         this.app.use('/', this._swagger.getRouter());
         this.app.use('/api/docs', express.static(path.join(__dirname, '../server-src/documentation/swagger-ui')));
-
+        // Index for Pinging
+        this.app.get('/', (req: Request, res: Response) => {
+           res.send('Welcome to uTicket Bot');
+        });
     }
 
     private onMongoConnection() {
