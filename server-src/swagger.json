@@ -1,0 +1,139 @@
+{
+	"basePath": "/api",
+	"consumes": [
+		"application/json"
+	],
+	"definitions": {
+		"ITeamVm": {
+			"properties": {
+				"teamName": {
+					"type": "string"
+				},
+				"teamId": {
+					"type": "string"
+				},
+				"isInitialized": {
+					"type": "boolean"
+				},
+				"_id": {
+					"type": "string"
+				}
+			},
+			"type": "object"
+		},
+		"ITicketResponse": {
+			"properties": {
+				"_id": {
+					"type": "string"
+				},
+				"category": {
+					"type": "string"
+				},
+				"summary": {
+					"type": "string"
+				},
+				"ticketNumber": {
+					"type": "number",
+					"format": "double"
+				},
+				"slug": {
+					"type": "string"
+				},
+				"createdOn": {
+					"type": "string",
+					"format": "date-time"
+				},
+				"isResolved": {
+					"type": "boolean"
+				},
+				"team": {
+					"$ref": "#/definitions/ITeamVm"
+				}
+			},
+			"type": "object"
+		}
+	},
+	"info": {
+		"description": "Documentation of APIs utilizing data gathered from uTicket Slack bot",
+		"author": "Nartc",
+		"version": "1.0.0",
+		"title": "uTicket Slack Bot"
+	},
+	"paths": {
+		"/teams": {
+			"get": {
+				"operationId": "GetTeams",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/ITeamVm"
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/tickets": {
+			"get": {
+				"operationId": "GetTickets",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/ITicketResponse"
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/tickets/{teamName}": {
+			"get": {
+				"operationId": "GetTicketsByTeam",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/ITicketResponse"
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "teamName",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		}
+	},
+	"produces": [
+		"application/json"
+	],
+	"swagger": "2.0",
+	"securityDefinitions": {}
+}
