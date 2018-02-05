@@ -103,13 +103,8 @@ export interface Message {
     delete_original?: boolean;
 }
 
-export interface MessageAttachment {
+interface Attachment {
     fallback: string;
-    callback_id: string;
-    actions?: MessageAction[];
-    color?: string;
-    title?: string;
-    attachment_type?: string;
     text?: string;
     pretext?: string;
     mrkdwn?: boolean;
@@ -124,29 +119,21 @@ export interface MessageAttachment {
     author_name?: string;
     author_link?: string;
     author_icon?: string;
+    color?: string;
+    title?: string;
 }
 
-export interface WebClientMessageAttachment {
-    fallback: string;
-    color?: string;
-    pretext?: string;
-    title?: string;
+export interface MessageAttachment extends Attachment{
+    callback_id: string;
+    actions?: MessageAction[];
+    attachment_type?: string;
+}
+
+export interface WebClientMessageAttachment extends Attachment{
     title_link?: string;
     text?: string;
-    fields?: [{
-        title?: string;
-        value?: string;
-        short?: boolean;
-    }];
     image_url?: string;
     thumb_url?: string;
-    footer?: string;
-    footer_icon?: string;
-    ts?: number;
-    author_name?: string;
-    author_link?: string;
-    author_icon?: string;
-    mrkdwn?: boolean;
 }
 
 export interface MessageAction {

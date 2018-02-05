@@ -42,30 +42,7 @@ export interface ITicketVm {
     createdOn?: Date;
     isResolved?: boolean;
 }
-// {
-//     label: 'Front-End',
-//         value: 'front'
-// },
-// {
-//     label: 'Back-End',
-//         value: 'back'
-// },
-// {
-//     label: 'APIs',
-//         value: 'api'
-// },
-// {
-//     label: 'Utility',
-//         value: 'utility'
-// },
-// {
-//     label: 'Facility',
-//         value: 'facility'
-// },
-// {
-//     label: 'Other',
-//         value: 'other'
-// }
+
 export const Category = {
     back: 'Back-end',
     front: 'Front-end',

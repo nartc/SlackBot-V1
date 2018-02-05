@@ -3,7 +3,8 @@ import * as moment from 'moment';
 import {ITicketResponse} from '../models/responses/ITicketResponse';
 import {Category, ITicket, Ticket} from '../models/Ticket';
 import {
-    ActionPayload, DialogOptions, Message, SelectDialogElement, SlackDialog, SlashCommandPayload, TextDialogElement,
+    ActionPayload, DialogOptions, Message, MessageAttachment, SelectDialogElement, SlackDialog, SlashCommandPayload,
+    TextDialogElement,
     WebClientMessageAttachment
 } from '../models/Slack';
 import {ITeam, Team} from '../models/Team';
@@ -639,5 +640,96 @@ export class SlackHelper {
 
             SlackHelper.sendMessageToUrl(responseUrl, message, res);
         }
+    };
+
+    resolveListAllTicketsAction = async (slashCommandPayload: SlashCommandPayload, responseUrl: string, res: Response) => {
+        const teamId = slashCommandPayload.channel_id;
+        const helperChannelId = process.env.HELPER_CHANNEL_ID || config.get('slack.helper_channel_id');
+        if (teamId === helperChannelId) {
+            const message: Message = {
+                replace_original: true,
+                response_type: 'in_channel',
+                attachments: [
+                    {
+                        fallback: 'Your channel does not support me',
+                        callback_id: 'list_all_action_error',
+                        color: 'danger',
+                        title: `I guess you guys are just bored. I would advise going around checking on the teams. Thanks. ¯\\_(ツ)_/¯ `
+                    }
+                ]
+            };
+
+            return SlackHelper.sendMessageToUrl(responseUrl, message, res);
+        }
+
+        const team = await this._teamRepository.getTeamByTeamIdOrName(teamId, '');
+        let message: Message;
+        if (team instanceof MongoError) {
+            return SlackHelper.resolveMongoError(responseUrl, res);
+        }
+
+        if ((!team || team === null) || (team && !team.isInitialized)) {
+            message = {
+                text: 'Error',
+                replace_original: true,
+                attachments: [
+                    {
+                        fallback: 'Your channel does not support me',
+                        callback_id: 'list_all_action_error',
+                        color: 'danger',
+                        title: `Your team has not been initialized with uTicket.`,
+                        text: 'Run `/uh init team_name` to initialize your team',
+                        mrkdwn: true
+                    }
+                ]
+            };
+
+            return SlackHelper.sendMessageToUrl(responseUrl, message, res);
+        }
+
+        const tickets = await this._ticketRepository.getTicketsByTeamName(team.teamName);
+
+        if (tickets instanceof MongoError) {
+            return SlackHelper.resolveMongoError(responseUrl, res);
+        }
+
+        if (tickets.length === 0) {
+            message = {
+                replace_original: true,
+                attachments: [
+                    {
+                        fallback: 'Your channel does not support me',
+                        callback_id: 'list_all_action_error',
+                        color: 'warning',
+                        title: 'Your team has not opened any ticket.',
+                        text: 'Run `/uh ticket` if you wish to open a ticket.',
+                        mrkdwn: true
+                    }
+                ]
+            };
+
+            return SlackHelper.sendMessageToUrl(responseUrl, message, res);
+        }
+
+        message = {
+            replace_original: true,
+            delete_original: true
+        };
+        let attachments: MessageAttachment[] = [];
+        tickets.forEach(ticket => {
+            const attachment: MessageAttachment = {
+                fallback: 'Your channel does not support me',
+                callback_id: 'list_all_action_error',
+                color: ticket.isResolved ? 'good' : 'warning',
+                title: `${ticket.ticketNumber}: ${ticket.isResolved ? 'Resolved' : 'Not resolved'}`,
+                text: 'Use `/uh check-ticket ' + ticket.slug + '` to check the ticket detail',
+                mrkdwn: true
+            };
+            attachments.push(attachment);
+        });
+
+        message.attachments = attachments;
+        message.response_type = 'in_channel';
+        SlackHelper.sendMessageToUrl(responseUrl, message, res);
     }
 }
