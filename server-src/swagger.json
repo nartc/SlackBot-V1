@@ -51,6 +51,32 @@
 				}
 			},
 			"type": "object"
+		},
+		"ISystemAuthResponse": {
+			"properties": {
+				"authToken": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"authToken"
+			],
+			"type": "object"
+		},
+		"IAuthLoginParams": {
+			"properties": {
+				"nick": {
+					"type": "string"
+				},
+				"pass": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"nick",
+				"pass"
+			],
+			"type": "object"
 		}
 	},
 	"info": {
@@ -76,6 +102,9 @@
 						}
 					}
 				},
+				"tags": [
+					"Operations"
+				],
 				"security": [],
 				"parameters": []
 			}
@@ -97,6 +126,9 @@
 						}
 					}
 				},
+				"tags": [
+					"Operations"
+				],
 				"security": [],
 				"parameters": []
 			}
@@ -118,11 +150,76 @@
 						}
 					}
 				},
+				"tags": [
+					"Operations"
+				],
 				"security": [],
 				"parameters": [
 					{
 						"in": "path",
 						"name": "teamName",
+						"required": true,
+						"type": "string"
+					}
+				]
+			}
+		},
+		"/auth/auth": {
+			"post": {
+				"operationId": "AdminAuth",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"$ref": "#/definitions/ISystemAuthResponse"
+						}
+					}
+				},
+				"tags": [
+					"System"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "loginParams",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/IAuthLoginParams"
+						}
+					}
+				]
+			}
+		},
+		"/auth/clear/{collection}": {
+			"get": {
+				"operationId": "ClearDatabase",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"schema": {
+							"type": "boolean"
+						}
+					}
+				},
+				"tags": [
+					"System"
+				],
+				"security": [
+					{
+						"JWT": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "collection",
 						"required": true,
 						"type": "string"
 					}
@@ -134,5 +231,21 @@
 		"application/json"
 	],
 	"swagger": "2.0",
-	"securityDefinitions": {}
+	"securityDefinitions": {
+		"JWT": {
+			"type": "apiKey",
+			"name": "Authorization",
+			"in": "header"
+		}
+	},
+	"tags": [
+		{
+			"name": "Operations",
+			"description": "Application main operations"
+		},
+		{
+			"name": "System",
+			"description": "Admin operations"
+		}
+	]
 }

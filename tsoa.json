@@ -5,6 +5,16 @@
       "version": "1.0.0",
       "title": "uTicket Slack Bot"
     },
+    "tags": [
+      {
+        "name": "Operations",
+        "description": "Application main operations"
+      },
+      {
+        "name": "System",
+        "description": "Admin operations"
+      }
+    ],
     "schemes": [
       "http",
       "https"
@@ -17,13 +27,21 @@
     ],
     "outputDirectory": "./server-src",
     "entryFile": "./server-src/app.ts",
-    "basePath": "/api"
+    "basePath": "/api",
+    "securityDefinitions": {
+      "JWT": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
   },
   "routes": {
     "basePath": "/api",
     "entryFile": "./server-src/app.ts",
     "routesDir": "./server-src/routes",
     "middleware": "express",
-    "middlewareTemplate": "custom-template.ts"
+    "middlewareTemplate": "custom-template.ts",
+    "authenticationModule": "./server-src/helpers/Passport.ts"
   }
 }
