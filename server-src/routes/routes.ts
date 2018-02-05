@@ -17,6 +17,8 @@ const models: TsoaRoute.Models = {
             "_id": { "dataType": "string" },
             "category": { "dataType": "string" },
             "summary": { "dataType": "string" },
+            "ticketNumber": { "dataType": "double" },
+            "slug": { "dataType": "string" },
             "createdOn": { "dataType": "datetime" },
             "isResolved": { "dataType": "boolean" },
             "team": { "ref": "ITeamVm" },
@@ -102,30 +104,31 @@ export function RegisterRoutes(app: any) {
                     response.status(statusCode || 204).end();
                 }
             })
-            .catch((error: any) => next(error));
+            .catch((error: any) => response.status(500).json(error));
     }
 
     function getValidatedArgs(args: any, request: any): any[] {
-        const fieldErrors: FieldErrors = {};
-        const values = Object.keys(args).map((key) => {
+        const errorFields: FieldErrors = {};
+        const values = Object.keys(args).map(function(key) {
             const name = args[key].name;
             switch (args[key].in) {
                 case 'request':
                     return request;
                 case 'query':
-                    return ValidateParam(args[key], request.query[name], models, name, fieldErrors);
+                    return ValidateParam(args[key], request.query[name], models, name, errorFields);
                 case 'path':
-                    return ValidateParam(args[key], request.params[name], models, name, fieldErrors);
+                    return ValidateParam(args[key], request.params[name], models, name, errorFields);
                 case 'header':
-                    return ValidateParam(args[key], request.header(name), models, name, fieldErrors);
+                    return ValidateParam(args[key], request.header(name), models, name, errorFields);
                 case 'body':
-                    return ValidateParam(args[key], request.body, models, name, fieldErrors, name + '.');
+                    return ValidateParam(args[key], request.body, models, name, errorFields);
                 case 'body-prop':
-                    return ValidateParam(args[key], request.body[name], models, name, fieldErrors, 'body.');
+                    return ValidateParam(args[key], request.body[name], models, name, errorFields);
             }
         });
-        if (Object.keys(fieldErrors).length > 0) {
-            throw new ValidateError(fieldErrors, '');
+
+        if (Object.keys(errorFields).length > 0) {
+            throw new ValidateError(errorFields, '');
         }
         return values;
     }

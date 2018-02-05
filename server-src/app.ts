@@ -6,6 +6,7 @@ import * as mongoose from 'mongoose';
 import {Mongoose} from 'mongoose';
 import * as logger from 'morgan';
 import * as config from 'config';
+import * as path from 'path';
 
 import {logger as winston, setupLogging} from './helpers/WinstonLogger';
 import {MongoError} from 'mongodb';
@@ -15,12 +16,15 @@ import './controllers/TeamController';
 import './controllers/TicketController';
 import {RegisterRoutes} from './routes/routes';
 import {SlackHelper} from './helpers/SlackHelper';
+import {SwaggerRouter} from './helpers/Swagger';
+
 
 class App {
     public app: Application;
     private _slackWebhook: SlackHelper = new SlackHelper();
     private _slackRoutes: SlackRoutes = new SlackRoutes(this._slackWebhook);
     private environmentHosting: string = process.env.NODE_ENV || 'Development';
+    private _swagger: SwaggerRouter = new SwaggerRouter();
 
     constructor() {
         this.app = express();
@@ -51,11 +55,16 @@ class App {
 
         // Import Slack Routes
         this._slackRoutes.routes();
-        RegisterRoutes(this.app);
+
     }
 
     private routes() {
+        RegisterRoutes(this.app);
         this.app.use('/api/slack', this._slackRoutes.router);
+        // SwaggerUI
+        this.app.use('/', this._swagger.getRouter());
+        this.app.use('/api/docs', express.static(path.join(__dirname, '../server-src/documentation/swagger-ui')));
+
     }
 
     private onMongoConnection() {

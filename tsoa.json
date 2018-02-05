@@ -1,7 +1,30 @@
 {
+  "swagger": {
+    "info": {
+      "description": "Documentation of APIs utilizing data gathered from uTicket Slack bot",
+      "author": "Nartc",
+      "version": "1.0.0",
+      "title": "uTicket Slack Bot"
+    },
+    "schemes": [
+      "http",
+      "https"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "outputDirectory": "./server-src",
+    "entryFile": "./server-src/app.ts",
+    "basePath": "/api"
+  },
   "routes": {
     "basePath": "/api",
     "entryFile": "./server-src/app.ts",
-    "routesDir": "./server-src/routes"
+    "routesDir": "./server-src/routes",
+    "middleware": "express",
+    "middlewareTemplate": "custom-template.ts"
   }
 }

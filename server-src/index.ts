@@ -1,3 +1,7 @@
+if (process.env.PORT) {
+    require('newrelic');
+}
+
 import * as http from 'http';
 import * as debug from 'debug';
 import * as config from 'config';
