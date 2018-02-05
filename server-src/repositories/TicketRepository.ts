@@ -14,7 +14,7 @@ export class TicketRepository implements ITicketRepository {
     }
 
     public async getTickets(): Promise<ITicketResponse[] | MongoError> {
-        return await this._ticketModel.find().populate('team') as ITicketResponse[];
+        return await this._ticketModel.find().populate('team', '-__v') as ITicketResponse[];
     }
 
     public async getCount(team: string): Promise<Number> {
@@ -30,11 +30,16 @@ export class TicketRepository implements ITicketRepository {
         return await this._ticketModel.find(query) as ITicketResponse[];
     }
 
+    public async getTicketBySlug(slug: string): Promise<ITicketResponse> {
+        const query = {slug};
+        return await this._ticketModel.findOne(query).populate('team', '-__v') as ITicketResponse;
+    }
+
     public async createTicket(newTicket: ITicket): Promise<ITicketResponse | MongoError> {
         return await this._ticketModel.create(newTicket) as ITicketResponse;
     }
 
     public async updateTicket(id: string, updatedTicket: ITicket): Promise<ITicketResponse | MongoError> {
-        return await this._ticketModel.findByIdAndUpdate(id, updatedTicket) as ITicketResponse;
+        return await this._ticketModel.findByIdAndUpdate(id, updatedTicket).populate('team', '-__v') as ITicketResponse;
     }
 }

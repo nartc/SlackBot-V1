@@ -7,18 +7,18 @@ import {Mongoose} from 'mongoose';
 import * as logger from 'morgan';
 import * as config from 'config';
 
-import {logger as winston, setupLogging} from './helpers/logger';
+import {logger as winston, setupLogging} from './helpers/WinstonLogger';
 import {MongoError} from 'mongodb';
 import {SlackRoutes} from './routes/SlackRoutes';
 
 import './controllers/TeamController';
 import './controllers/TicketController';
 import {RegisterRoutes} from './routes/routes';
-import {SlackWebhook} from './helpers/slackWebhook';
+import {SlackHelper} from './helpers/SlackHelper';
 
 class App {
     public app: Application;
-    private _slackWebhook: SlackWebhook = new SlackWebhook();
+    private _slackWebhook: SlackHelper = new SlackHelper();
     private _slackRoutes: SlackRoutes = new SlackRoutes(this._slackWebhook);
     private environmentHosting: string = process.env.NODE_ENV || 'Development';
 

@@ -113,6 +113,17 @@ export interface MessageAttachment {
     text?: string;
     pretext?: string;
     mrkdwn?: boolean;
+    fields?: [{
+        title?: string;
+        value?: string;
+        short?: boolean;
+    }];
+    ts?: number;
+    footer?: string;
+    footer_icon?: string;
+    author_name?: string;
+    author_link?: string;
+    author_icon?: string;
 }
 
 export interface WebClientMessageAttachment {

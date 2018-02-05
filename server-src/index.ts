@@ -3,7 +3,7 @@ import * as debug from 'debug';
 import * as config from 'config';
 
 import App from './app';
-import {logger} from './helpers/logger';
+import {logger} from './helpers/WinstonLogger';
 
 debug('ts-express:server');
 
