@@ -4,14 +4,14 @@ if (process.env.PORT) {
 
 import * as http from 'http';
 import * as debug from 'debug';
-import * as config from 'config';
+import {get} from 'config';
 
 import App from './app';
 import {logger} from './helpers/WinstonLogger';
 
 debug('ts-express:server');
 
-const port = normalizePort(process.env.PORT || config.get('express.port'));
+const port = normalizePort(process.env.PORT || get('express.port'));
 App.app.set('port', port);
 
 console.log(`Server listening on port ${port}`);

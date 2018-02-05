@@ -1,4 +1,4 @@
-import * as config from 'config';
+import {get} from 'config';
 import {Application} from 'express';
 import * as expressWinston from 'express-winston';
 import * as winston from 'winston';
@@ -10,7 +10,7 @@ process.on('unhandledRejection', (reason, p) => {
     logger.warn('Possibly Unhandled Rejection at: Promise ', p, ' reason: ', reason);
 });
 
-const level: string = process.env.LOG_LEVEL || config.get('loglevel');
+const level: string = process.env.LOG_LEVEL || get('loglevel');
 
 export function setupLogging(app: Application) {
     /**

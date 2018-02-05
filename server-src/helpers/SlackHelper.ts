@@ -1,4 +1,4 @@
-import * as config from 'config';
+import {get} from 'config';
 import * as moment from 'moment';
 import {ITicketResponse} from '../models/responses/ITicketResponse';
 import {Category, ITicket, Ticket} from '../models/Ticket';
@@ -24,7 +24,7 @@ export class SlackHelper {
     _webClient;
     private _teamRepository: ITeamRepository = new TeamRepository(Team);
     private _ticketRepository: ITicketRepository = new TicketRepository(Ticket, Team);
-    private slackToken: string = process.env.SLACK_TOKEN || config.get('slack.token');
+    private slackToken: string = process.env.SLACK_TOKEN || get('slack.token');
 
     constructor() {
         this._webClient = new WebClient(this.slackToken);
@@ -168,7 +168,7 @@ export class SlackHelper {
             uri: 'https://slack.com/api/dialog.open',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.SLACK_TOKEN || config.get('slack.token')}`
+                'Authorization': `Bearer ${process.env.SLACK_TOKEN || get('slack.token')}`
             },
             json: dialogOptions
         };
@@ -215,7 +215,7 @@ export class SlackHelper {
         };
 
         SlackHelper.sendMessageToUrl(responseUrl, message, res);
-        await this.postTicketDetail(process.env.HELPER_CHANNEL_ID || config.get('slack.helper_channel_id'), result as ITicketResponse, team as ITeam);
+        await this.postTicketDetail(process.env.HELPER_CHANNEL_ID || get('slack.helper_channel_id'), result as ITicketResponse, team as ITeam);
     };
 
     resolveTicketButtonActions = async (actionPayload: ActionPayload, responseUrl: string, res: Response) => {
@@ -390,7 +390,7 @@ export class SlackHelper {
     resolveTicketResolveAction = async (slashCommandPayload: SlashCommandPayload, responseUrl: string, res: Response) => {
         const actionText = slashCommandPayload.text;
         const teamId = slashCommandPayload.channel_id;
-        const helperTeamId = process.env.HELPER_CHANNEL_ID || config.get('slack.helper_channel_id');
+        const helperTeamId = process.env.HELPER_CHANNEL_ID || get('slack.helper_channel_id');
         if (teamId !== helperTeamId) {
             const message: Message = {
                 text: 'Error',
@@ -525,7 +525,7 @@ export class SlackHelper {
     resolveCheckTicketAction = async (slashCommandPayload: SlashCommandPayload, responseUrl: string, res: Response) => {
         const teamId = slashCommandPayload.channel_id;
         const actionText = slashCommandPayload.text;
-        const helperChannelId = process.env.HELPER_CHANNEL_ID || config.get('slack.helper_channel_id');
+        const helperChannelId = process.env.HELPER_CHANNEL_ID || get('slack.helper_channel_id');
 
         if (actionText.split(' ').length > 2) {
             const message: Message = {
@@ -644,7 +644,7 @@ export class SlackHelper {
 
     resolveListAllTicketsAction = async (slashCommandPayload: SlashCommandPayload, responseUrl: string, res: Response) => {
         const teamId = slashCommandPayload.channel_id;
-        const helperChannelId = process.env.HELPER_CHANNEL_ID || config.get('slack.helper_channel_id');
+        const helperChannelId = process.env.HELPER_CHANNEL_ID || get('slack.helper_channel_id');
         if (teamId === helperChannelId) {
             const message: Message = {
                 replace_original: true,
