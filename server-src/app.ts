@@ -5,7 +5,7 @@ import {Application, Request, Response} from 'express';
 import * as mongoose from 'mongoose';
 import {Connection, Mongoose} from 'mongoose';
 import * as logger from 'morgan';
-import * as config from 'config';
+import {get} from 'config';
 import * as path from 'path';
 
 import {logger as winston, setupLogging} from './helpers/WinstonLogger';
@@ -42,7 +42,7 @@ class App {
         // Connect to MongoDB
         (mongoose as Mongoose).Promise = global.Promise;
 
-        mongoose.connect(process.env.MONGO_URI || config.get('mongo.mongo_uri'));
+        mongoose.connect(process.env.MONGO_URI || get('mongo.mongo_uri'));
             // .then(this.onMongoConnection)
             // .catch(this.onMongoError);
         this.mongooseConnection = mongoose.connection;
