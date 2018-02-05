@@ -168,7 +168,7 @@ export class SlackHelper {
             uri: 'https://slack.com/api/dialog.open',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${config.get('slack.token')}`
+                'Authorization': `Bearer ${process.env.SLACK_TOKEN || config.get('slack.token')}`
             },
             json: dialogOptions
         };
