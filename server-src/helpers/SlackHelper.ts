@@ -27,13 +27,13 @@ export class SlackHelper {
     private _teamRepository: ITeamRepository = new TeamRepository(Team);
     private _ticketRepository: ITicketRepository = new TicketRepository(Ticket, Team);
     private _workspaceRepository: IWorkspaceRepository = new WorkspaceRepository(Workspace);
-    private slackToken: string = process.env.SLACK_TOKEN || get('slack.token');
 
     constructor() {
-        this._webClient = new WebClient(this.slackToken);
+
     }
 
-    public async postTicketDetail(channelId: string, ticket: ITicketResponse, team: ITeam) {
+    public async postTicketDetail(channelId: string, oauthToken: string, ticket: ITicketResponse, team: ITeam) {
+        this._webClient = new WebClient(oauthToken);
         const ts: number = moment().unix();
         const messageAttachments: WebClientMessageAttachment[] = [
             {
@@ -186,6 +186,8 @@ export class SlackHelper {
     resolveTicketDialogActions = async (actionPayload: ActionPayload, responseUrl: string, res: Response) => {
         const actionItem = actionPayload.submission;
         const teamId = actionPayload.channel.id;
+        const workspaceId = actionPayload.team.id;
+        const workspace = await this._workspaceRepository.getWorkspaceByWorkspaceId(workspaceId);
         const team = await this._teamRepository.getTeamByTeamIdOrName(teamId, '');
 
         if (team instanceof MongoError)
@@ -218,7 +220,7 @@ export class SlackHelper {
         };
 
         SlackHelper.sendMessageToUrl(responseUrl, message, res);
-        await this.postTicketDetail(process.env.HELPER_CHANNEL_ID || get('slack.helper_channel_id'), result as ITicketResponse, team as ITeam);
+        await this.postTicketDetail(process.env.HELPER_CHANNEL_ID || get('slack.helper_channel_id'), workspace.OAuthToken, result as ITicketResponse, team as ITeam);
     };
 
     resolveTicketButtonActions = async (actionPayload: ActionPayload, responseUrl: string, res: Response) => {
