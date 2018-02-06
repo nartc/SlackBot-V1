@@ -67,6 +67,8 @@ class App {
         // Import Slack Routes
         this._slackRoutes.routes();
 
+        // Static
+        this.app.use(express.static(path.join(__dirname, '../public')));
     }
 
     private routes() {
@@ -77,7 +79,7 @@ class App {
         this.app.use('/api/docs', express.static(path.join(__dirname, '../server-src/documentation/swagger-ui')));
         // Index for Pinging
         this.app.get('/', (req: Request, res: Response) => {
-           res.send('Welcome to uTicket Bot');
+           res.sendFile(path.join(__dirname, '../public/index.html'));
         });
     }
 
