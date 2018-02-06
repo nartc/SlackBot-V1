@@ -3,9 +3,8 @@ import * as moment from 'moment';
 import {ITicketResponse} from '../models/responses/ITicketResponse';
 import {Category, ITicket, Ticket} from '../models/Ticket';
 import {
-    ActionPayload, DialogOptions, Message, MessageAttachment, SelectDialogElement, SlackDialog, SlashCommandPayload,
-    TextDialogElement,
-    WebClientMessageAttachment
+    ActionPayload, DialogOptions, Message, MessageAttachment, OAuthPayload, SelectDialogElement, SlackDialog,
+    SlashCommandPayload, TextDialogElement, WebClientMessageAttachment
 } from '../models/Slack';
 import {ITeam, Team} from '../models/Team';
 import * as request from 'request';
@@ -17,6 +16,9 @@ import {TeamRepository} from '../repositories/TeamRepository';
 import {ITeamRepository} from '../repositories/ITeamRepository';
 import {ITicketRepository} from '../repositories/ITicketRepository';
 import {MongoError} from 'mongodb';
+import {IWorkspaceRepository} from '../repositories/IWorkspaceRepository';
+import {WorkspaceRepository} from '../repositories/WorkspaceRepository';
+import {IWorkspace, Workspace} from '../models/Workspace';
 
 const {WebClient} = require('@slack/client');
 
@@ -24,6 +26,7 @@ export class SlackHelper {
     _webClient;
     private _teamRepository: ITeamRepository = new TeamRepository(Team);
     private _ticketRepository: ITicketRepository = new TicketRepository(Ticket, Team);
+    private _workspaceRepository: IWorkspaceRepository = new WorkspaceRepository(Workspace);
     private slackToken: string = process.env.SLACK_TOKEN || get('slack.token');
 
     constructor() {
@@ -110,7 +113,7 @@ export class SlackHelper {
 
     }
 
-    public static openDialog(actionTriggerId: string | undefined) {
+    public static openDialog(actionTriggerId: string | undefined, oauthToken: string) {
         const ticketSelectElement: SelectDialogElement = {
             label: 'Category',
             name: 'category',
@@ -168,7 +171,7 @@ export class SlackHelper {
             uri: 'https://slack.com/api/dialog.open',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.SLACK_TOKEN || get('slack.token')}`
+                'Authorization': `Bearer ${oauthToken}`
             },
             json: dialogOptions
         };
@@ -222,6 +225,10 @@ export class SlackHelper {
         const actionItem = actionPayload.actions[0];
         const actionTriggerId = actionPayload.trigger_id;
         const actionThread = actionPayload.action_ts;
+        const workspaceId = actionPayload.team.id;
+
+        const workspace = await this._workspaceRepository.getWorkspaceByWorkspaceId(workspaceId);
+
         let message: Message;
         if (actionItem.value === 'no') {
             message = {
@@ -238,7 +245,7 @@ export class SlackHelper {
                 replace_original: true
             };
             SlackHelper.sendMessageToUrl(responseUrl, message, res);
-            SlackHelper.openDialog(actionTriggerId);
+            SlackHelper.openDialog(actionTriggerId, workspace.OAuthToken);
         }
     };
 
@@ -731,5 +738,59 @@ export class SlackHelper {
         message.attachments = attachments;
         message.response_type = 'in_channel';
         SlackHelper.sendMessageToUrl(responseUrl, message, res);
+    };
+
+    resolveOAuthAction = async (code: string, res: Response) => {
+        const clientID: string = process.env.CLIENT_ID || get('slack.client_id');
+        const clientSecret: string = process.env.CLIENT_SECRET || get('slack.client_secret');
+        const redirectURI: string = 'https://slack.com/app_redirect?';
+        const slackOAuthURI: string = `https://slack.com/api/oauth.access?client_id=${clientID}&client_secret=${clientSecret}&code=${code}`;
+
+        const OAuthGetOptions: OptionsWithUri = {
+            method: 'GET',
+            uri: slackOAuthURI,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        };
+
+        request(OAuthGetOptions, async (error, response, body) => {
+            if (error) {
+                return res.json({
+                    throw: true,
+                    message: 'Unexpected Error',
+                    error
+                });
+            }
+
+            const OAuthBody: OAuthPayload = JSON.parse(body);
+            const channelId: string = OAuthBody.incoming_webhook.channel_id;
+            const workSpaceName: string = OAuthBody.team_name;
+            const workspaceId: string = OAuthBody.team_id;
+            const OAuthToken: string = OAuthBody.access_token;
+
+            const existedWorkspace = await this._workspaceRepository.getWorkspaceByWorkspaceId(workspaceId);
+
+            if (existedWorkspace) {
+                const updatedWorkspace: IWorkspace = new Workspace();
+                updatedWorkspace.workspaceId = existedWorkspace.workspaceId;
+                updatedWorkspace.workSpaceName = existedWorkspace.workSpaceName;
+                updatedWorkspace.createdOn = existedWorkspace.createdOn;
+                updatedWorkspace.OAuthToken = OAuthToken;
+                updatedWorkspace._id = existedWorkspace._id;
+
+                await this._workspaceRepository.updateWorkspaceAuth(existedWorkspace._id, updatedWorkspace);
+            } else {
+                const newWorkspace: IWorkspace = new Workspace();
+                newWorkspace.workSpaceName = workSpaceName;
+                newWorkspace.workspaceId = workspaceId;
+                newWorkspace.OAuthToken = OAuthToken;
+
+                await this._workspaceRepository.createWorkspaceAuth(newWorkspace);
+            }
+
+
+            res.redirect(`${redirectURI}channel=${channelId}`);
+        });
     }
 }
