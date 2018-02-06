@@ -15,5 +15,7 @@ export class SlackRoutes {
     routes() {
         this.router.post('/', this._slackController.slashCommandHandler.bind(this._slackController));
         this.router.post('/actions', this._slackController.slashActionsHandler.bind(this._slackController));
+        this.router.get('/oauth', this._slackController.oauthHandler.bind(this._slackController));
+        this.router.get('/oauth/install', this._slackController.oauthInstallHandler.bind(this._slackController));
     }
 }

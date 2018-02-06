@@ -13,7 +13,10 @@ export class SlackController {
     }
 
     public async slashCommandHandler(req: Request, res: Response) {
+        console.log(req);
+        console.log(req.body);
         const slashCommandPayload = req.body as SlashCommandPayload;
+
         const responseUrl = slashCommandPayload.response_url;
         const actionText = slashCommandPayload.text.split(' ')[0];
         if (!actionText || actionText === '') {
@@ -28,7 +31,6 @@ export class SlackController {
                     }
                 ]
             };
-
             SlackHelper.sendMessageToUrl(responseUrl, message, res);
         } else {
             switch (actionText) {
@@ -71,5 +73,14 @@ export class SlackController {
                 await this._slackHelper.resolveTicketDialogActions(actionPayload, this.actionUrl, res);
                 break;
         }
+    }
+
+    public async oauthHandler(req: Request, res: Response) {
+        const code: string = req.query.code;
+        await this._slackHelper.resolveOAuthAction(code, res);
+    }
+
+    public async oauthInstallHandler(req: Request, res: Response) {
+        console.log(req);
     }
 }

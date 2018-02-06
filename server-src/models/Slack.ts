@@ -42,6 +42,21 @@ export interface DialogOptions {
     dialog: SlackDialog;
 }
 
+export interface OAuthPayload {
+    access_token?: string;
+    ok?: boolean;
+    scope?: string;
+    user_id?: string;
+    team_name?: string;
+    team_id?: string;
+    incoming_webhook?: {
+        channel?: string;
+        channel_id?: string;
+        configuration_url?: string;
+        url?: string;
+    }
+}
+
 interface DialogElement {
     label: string;
     name: string;
