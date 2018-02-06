@@ -2,6 +2,7 @@ import {ActionPayload, Message, SlashCommandPayload} from '../models/Slack';
 import {Request, Response} from 'express';
 import {SlackHelper} from '../helpers/SlackHelper';
 import {get} from 'config';
+import * as path from 'path';
 
 export class SlackController {
 
@@ -77,6 +78,9 @@ export class SlackController {
     }
 
     public async oauthHandler(req: Request, res: Response) {
+        if (req.query.error) {
+            return res.sendFile(path.join(__dirname, '../../public/index.html'));
+        }
         const code: string = req.query.code;
         await this._slackHelper.resolveOAuthAction(code, res);
     }
