@@ -1,6 +1,7 @@
 import {ActionPayload, Message, SlashCommandPayload} from '../models/Slack';
 import {Request, Response} from 'express';
 import {SlackHelper} from '../helpers/SlackHelper';
+import {get} from 'config';
 
 export class SlackController {
 
@@ -81,6 +82,7 @@ export class SlackController {
     }
 
     public async oauthInstallHandler(req: Request, res: Response) {
-        console.log(req);
+        const oauthInstallURI = process.env.OAUTH_DIRECT_INSTALL || get('slack.oauth_direct_install');
+        res.status(302).redirect(oauthInstallURI);
     }
 }
