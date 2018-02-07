@@ -54,7 +54,7 @@ export class SlackHelper {
                 {
                     text: 'You have successfully created a support ticket with ticket number `' + (result as ITicketResponse).slug + '`.\n You can later run `/uh check-ticket ticketNumber` to check your ticket.',
                     title: 'Great!',
-                    fallback: 'Your channel does not support me',
+                    fallback: this.fallbackText,
                     color: 'good',
                     callback_id: 'create_ticket_success'
                 }
@@ -99,7 +99,7 @@ export class SlackHelper {
                 replace_original: true,
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'init_action_error',
                         color: 'danger',
                         title: `Error`,
@@ -118,7 +118,7 @@ export class SlackHelper {
                 replace_original: true,
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'init_action_error',
                         color: 'danger',
                         title: `Error`,
@@ -140,7 +140,7 @@ export class SlackHelper {
                 replace_original: true,
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'init_action_error',
                         color: 'danger',
                         title: `Already initialized team ${existedTeam.teamName}`
@@ -163,7 +163,7 @@ export class SlackHelper {
                     replace_original: true,
                     attachments: [
                         {
-                            fallback: 'Your channel does not support me',
+                            fallback: this.fallbackText,
                             callback_id: 'init_action_success',
                             color: 'good',
                             title: `Your team ${result.teamName} is ready to go`
@@ -184,7 +184,7 @@ export class SlackHelper {
                 response_type: 'in_channel',
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'list_all_action_error',
                         color: 'danger',
                         title: `I guess you guys are just bored. I would advise going around checking on the teams. Thanks. ¯\\_(ツ)_/¯ `,
@@ -205,7 +205,7 @@ export class SlackHelper {
                 replace_original: true,
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'ticket_init_error',
                         color: 'danger',
                         title: `Your team has not been initialized with uTicket.`,
@@ -219,7 +219,7 @@ export class SlackHelper {
                 replace_original: true,
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'ticket_init',
                         color: 'good',
                         title: 'Are you sure to open a Support Ticket?',
@@ -254,7 +254,7 @@ export class SlackHelper {
                 replace_original: true,
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'resolve_ticket_action_error',
                         color: 'danger',
                         title: 'Your team is not authorized to run `resolve` command.'
@@ -270,7 +270,7 @@ export class SlackHelper {
                 replace_original: true,
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'resolve_ticket_action_error',
                         color: 'danger',
                         title: `Error`,
@@ -289,7 +289,7 @@ export class SlackHelper {
                 replace_original: true,
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'resolve_ticket_action_error',
                         color: 'danger',
                         title: `Error`,
@@ -310,7 +310,7 @@ export class SlackHelper {
                 replace_original: true,
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'resolve_ticket_action_error',
                         color: 'danger',
                         title: `Ticket ${ticketSlug} is unavailable or is not existed. Please try again.`
@@ -338,7 +338,7 @@ export class SlackHelper {
                     attachments: [
                         {
                             title: `Ticket ${result.ticketNumber} has been resolved.`,
-                            fallback: 'Your channel does not support me',
+                            fallback: this.fallbackText,
                             color: 'good',
                             callback_id: 'resolve_ticket_action_success',
                             footer: 'UMSL|Hack',
@@ -385,7 +385,7 @@ export class SlackHelper {
                 replace_original: true,
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'check_ticket_action_success',
                         color: 'danger',
                         title: `Error`,
@@ -404,7 +404,7 @@ export class SlackHelper {
                 replace_original: true,
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'check_ticket_action_success',
                         color: 'danger',
                         title: `Error`,
@@ -425,7 +425,7 @@ export class SlackHelper {
                 replace_original: true,
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'check_ticket_action_success',
                         color: 'danger',
                         title: `Ticket ${ticketSlug} is unavailable or is not existed. Please try again.`
@@ -439,7 +439,7 @@ export class SlackHelper {
                 replace_original: true,
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'check_ticket_action_success',
                         color: 'danger',
                         title: 'Your team is not authorized to run `check-ticket` command on Ticket Numbers that are not yours.'
@@ -454,7 +454,7 @@ export class SlackHelper {
                 attachments: [
                     {
                         title: `Ticket ${ticket.ticketNumber}:`,
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         color: ticket.isResolved ? 'good' : 'warning',
                         callback_id: 'check_ticket_action_success',
                         footer: 'UMSL|Hack',
@@ -499,7 +499,7 @@ export class SlackHelper {
                 response_type: 'in_channel',
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'list_all_action_error',
                         color: 'danger',
                         title: `I guess you guys are just bored. I would advise going around checking on the teams. Thanks. ¯\\_(ツ)_/¯ `,
@@ -522,7 +522,7 @@ export class SlackHelper {
                 replace_original: true,
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'list_all_action_error',
                         color: 'danger',
                         title: `Your team has not been initialized with uTicket.`,
@@ -546,7 +546,7 @@ export class SlackHelper {
                 replace_original: true,
                 attachments: [
                     {
-                        fallback: 'Your channel does not support me',
+                        fallback: this.fallbackText,
                         callback_id: 'list_all_action_error',
                         color: 'warning',
                         title: 'Your team has not opened any ticket.',
@@ -566,7 +566,7 @@ export class SlackHelper {
         let attachments: MessageAttachment[] = [];
         tickets.forEach(ticket => {
             const attachment: MessageAttachment = {
-                fallback: 'Your channel does not support me',
+                fallback: this.fallbackText,
                 callback_id: 'list_all_action_error',
                 color: ticket.isResolved ? 'good' : 'warning',
                 title: `${ticket.ticketNumber}: ${ticket.isResolved ? 'Resolved' : 'Not resolved'}`,
@@ -632,10 +632,85 @@ export class SlackHelper {
 
             res.redirect(`${redirectURI}channel=${channelId}`);
         });
-    }
+    };
+
+
+    resolveHelpAction = async (slashCommandPayload: SlashCommandPayload, responseUrl: string, res: Response) => {
+        const actions = {
+            init: {
+                text: '`init`',
+                param: '`{team_name}`',
+                example: '`/uh init MyTeamName`'
+            },
+            ticket: {
+                text: '`ticket`',
+                example: '`/uh ticket`'
+            },
+            resolve: {
+                text: '`resolve`',
+                param: '`{ticket_number}`',
+                example: '`/uh resolve MyTeamName_1000`'
+            },
+            listAll: {
+                text: '`list-all`',
+                example: '`/uh list-all`'
+            },
+            checkTicket: {
+                text: '`check-ticket`',
+                param: '`{ticket_number}`',
+                example: '`/uh check-ticket MyTeamName_1000`'
+            },
+            main: {
+                text: '`/uh`'
+            }
+        };
+
+        const message: Message = {
+            replace_original: true,
+            attachments: [
+                {
+                    fallback: this.fallbackText,
+                    callback_id: 'help_action',
+                    color: 'info',
+                    title: 'uTicket Help',
+                    text: `
+                        uTicket is utilizing Slack's Slash Command API to operate. The command is ${actions.main.text} and it does have the following actions:
+                        - Initialize Team: Initialize the action-invoking channel as a Team in the database. Channels have to initialize themselves using this action before being able to use other actions.
+                            _Syntax_: ${actions.init.text}
+                            _Parameter_: ${actions.init.param}
+                            _Example_: ${actions.init.example}
+                        
+                        - Create Ticket: Create a Support Ticket that is bound to your Team.
+                            _Syntax_: ${actions.ticket.text}
+                            _Parameter_: N/A,
+                            _Example_: ${actions.ticket.example}
+                            
+                        - Resolve Ticket (Helper Only): Mark a Support Ticket's resolve status to true.
+                            _Syntax_: ${actions.resolve.text}
+                            _Parameter_: ${actions.resolve.param}
+                            _Example_: ${actions.resolve.example}
+                            
+                        - List All Tickets: List all of the action-invoking channel (Team) tickets.
+                            _Syntax_: ${actions.listAll.text}
+                            _Parameter_: N/A
+                            _Example_: ${actions.listAll.example}
+                            
+                        - Check Single Ticket: Check status/detail of a single ticket.
+                            _Syntax_: ${actions.checkTicket.text}
+                            _Parameter_: ${actions.checkTicket.param}
+                            _Example_: ${actions.checkTicket.example}
+                        `
+                }
+            ]
+        };
+
+        SlackHelper.sendMessageToUrl(responseUrl, message, res);
+    };
+
     private _teamRepository: ITeamRepository = new TeamRepository(Team);
     private _ticketRepository: ITicketRepository = new TicketRepository(Ticket, Team);
     private _workspaceRepository: IWorkspaceRepository = new WorkspaceRepository(Workspace);
+    private fallbackText: string = 'Your channel does not support me';
 
     constructor() {
 
