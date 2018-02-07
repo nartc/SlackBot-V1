@@ -672,35 +672,35 @@ export class SlackHelper {
                 {
                     fallback: this.fallbackText,
                     callback_id: 'help_action',
-                    color: 'info',
+                    color: '#439FE0',
                     title: 'uTicket Help',
                     text: `
-                        uTicket is utilizing Slack's Slash Command API to operate. The command is ${actions.main.text} and it does have the following actions:
+                    uTicket is utilizing Slack's Slash Command API to operate. The command is ${actions.main.text} and it does have the following actions:
                     - *Initialize Team*: Initialize the action-invoking channel as a Team in the database. Channels have to initialize themselves using this action before being able to use other actions.
-                        _Syntax_: ${actions.init.text}
-                        _Parameter_: ${actions.init.param}
-                        _Example_: ${actions.init.example}
-                        
+                     _Syntax_: ${actions.init.text}
+                     _Parameter_: ${actions.init.param}
+                     _Example_: ${actions.init.example}
+                     
                     - *Create Ticket*: Create a Support Ticket that is bound to your Team.
-                        _Syntax_: ${actions.ticket.text}
-                        _Parameter_: N/A,
-                        _Example_: ${actions.ticket.example}
-                            
+                     _Syntax_: ${actions.ticket.text}
+                     _Parameter_: N/A
+                     _Example_: ${actions.ticket.example}
+                     
                     - *Resolve Ticket (Helper Only)*: Mark a Support Ticket's resolve status to true.
-                        _Syntax_: ${actions.resolve.text}
-                        _Parameter_: ${actions.resolve.param}
-                        _Example_: ${actions.resolve.example}
-                            
+                     _Syntax_: ${actions.resolve.text}
+                     _Parameter_: ${actions.resolve.param}
+                     _Example_: ${actions.resolve.example}
+                     
                     - *List All Tickets*: List all of the action-invoking channel (Team) tickets.
-                        _Syntax_: ${actions.listAll.text}
-                        _Parameter_: N/A
-                        _Example_: ${actions.listAll.example}
-                            
+                     _Syntax_: ${actions.listAll.text}
+                     _Parameter_: N/A
+                     _Example_: ${actions.listAll.example}
+                     
                     - *Check Single Ticket*: Check status/detail of a single ticket.
-                        _Syntax_: ${actions.checkTicket.text}
-                        _Parameter_: ${actions.checkTicket.param}
-                        _Example_: ${actions.checkTicket.example}
-                        `
+                     _Syntax_: ${actions.checkTicket.text}
+                     _Parameter_: ${actions.checkTicket.param}
+                     _Example_: ${actions.checkTicket.example}
+                     `
                 }
             ]
         };

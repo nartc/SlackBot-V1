@@ -29,7 +29,7 @@ export class SlackController {
                         fallback: 'Your channel does not support me',
                         callback_id: 'init_action',
                         color: 'warning',
-                        title: 'No valid command provided'
+                        title: 'No valid command provided. Run `/uh help` for instruction.'
                     }
                 ]
             };
