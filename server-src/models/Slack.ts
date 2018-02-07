@@ -83,8 +83,9 @@ interface SelectElementOption {
 }
 
 interface Submission {
-    [key: string]: string;
     value?: string;
+
+    [key: string]: string;
 }
 
 interface Team {
@@ -138,13 +139,13 @@ interface Attachment {
     title?: string;
 }
 
-export interface MessageAttachment extends Attachment{
+export interface MessageAttachment extends Attachment {
     callback_id: string;
     actions?: MessageAction[];
     attachment_type?: string;
 }
 
-export interface WebClientMessageAttachment extends Attachment{
+export interface WebClientMessageAttachment extends Attachment {
     title_link?: string;
     text?: string;
     image_url?: string;

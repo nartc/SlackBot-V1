@@ -1,50 +1,48 @@
 /* tslint:disable */
-import { Controller, ValidateParam, FieldErrors, ValidateError, TsoaRoute } from 'tsoa';
-import { TeamController } from './../controllers/TeamController';
-import { TicketController } from './../controllers/TicketController';
-import { SystemController } from './../controllers/SystemController';
+import {Controller, FieldErrors, TsoaRoute, ValidateError, ValidateParam} from 'tsoa';
+import {TeamController} from './../controllers/TeamController';
+import {TicketController} from './../controllers/TicketController';
+import {SystemController} from './../controllers/SystemController';
 import * as passport from 'passport';
-import { expressAuthentication } from './../helpers/Passport';
 
 const models: TsoaRoute.Models = {
-    "ITeamVm": {
-        "properties": {
-            "teamName": { "dataType": "string" },
-            "teamId": { "dataType": "string" },
-            "isInitialized": { "dataType": "boolean" },
-            "_id": { "dataType": "string" },
+    'ITeamVm': {
+        'properties': {
+            'teamName': {'dataType': 'string'},
+            'teamId': {'dataType': 'string'},
+            'isInitialized': {'dataType': 'boolean'},
+            '_id': {'dataType': 'string'},
         },
     },
-    "ITicketResponse": {
-        "properties": {
-            "_id": { "dataType": "string" },
-            "category": { "dataType": "string" },
-            "summary": { "dataType": "string" },
-            "ticketNumber": { "dataType": "double" },
-            "slug": { "dataType": "string" },
-            "createdOn": { "dataType": "datetime" },
-            "isResolved": { "dataType": "boolean" },
-            "team": { "ref": "ITeamVm" },
+    'ITicketResponse': {
+        'properties': {
+            '_id': {'dataType': 'string'},
+            'category': {'dataType': 'string'},
+            'summary': {'dataType': 'string'},
+            'ticketNumber': {'dataType': 'double'},
+            'slug': {'dataType': 'string'},
+            'createdOn': {'dataType': 'datetime'},
+            'isResolved': {'dataType': 'boolean'},
+            'team': {'ref': 'ITeamVm'},
         },
     },
-    "ISystemAuthResponse": {
-        "properties": {
-            "authToken": { "dataType": "string", "required": true },
+    'ISystemAuthResponse': {
+        'properties': {
+            'authToken': {'dataType': 'string', 'required': true},
         },
     },
-    "IAuthLoginParams": {
-        "properties": {
-            "nick": { "dataType": "string", "required": true },
-            "pass": { "dataType": "string", "required": true },
+    'IAuthLoginParams': {
+        'properties': {
+            'nick': {'dataType': 'string', 'required': true},
+            'pass': {'dataType': 'string', 'required': true},
         },
     },
 };
 
 export function RegisterRoutes(app: any) {
     app.get('/api/teams',
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
+        function (request: any, response: any, next: any) {
+            const args = {};
 
             let validatedArgs: any[] = [];
             try {
@@ -60,9 +58,8 @@ export function RegisterRoutes(app: any) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/api/tickets',
-        function(request: any, response: any, next: any) {
-            const args = {
-            };
+        function (request: any, response: any, next: any) {
+            const args = {};
 
             let validatedArgs: any[] = [];
             try {
@@ -78,9 +75,9 @@ export function RegisterRoutes(app: any) {
             promiseHandler(controller, promise, response, next);
         });
     app.get('/api/tickets/:teamName',
-        function(request: any, response: any, next: any) {
+        function (request: any, response: any, next: any) {
             const args = {
-                teamName: { "in": "path", "name": "teamName", "required": true, "dataType": "string" },
+                teamName: {'in': 'path', 'name': 'teamName', 'required': true, 'dataType': 'string'},
             };
 
             let validatedArgs: any[] = [];
@@ -97,9 +94,9 @@ export function RegisterRoutes(app: any) {
             promiseHandler(controller, promise, response, next);
         });
     app.post('/api/auth/auth',
-        function(request: any, response: any, next: any) {
+        function (request: any, response: any, next: any) {
             const args = {
-                loginParams: { "in": "body", "name": "loginParams", "required": true, "ref": "IAuthLoginParams" },
+                loginParams: {'in': 'body', 'name': 'loginParams', 'required': true, 'ref': 'IAuthLoginParams'},
             };
 
             let validatedArgs: any[] = [];
@@ -117,10 +114,10 @@ export function RegisterRoutes(app: any) {
         });
     app.get('/api/auth/clear/:collection',
         authenticateMiddleware('jwt'),
-        function(request: any, response: any, next: any) {
+        function (request: any, response: any, next: any) {
             const args = {
-                expressRequest: { "in": "request", "name": "expressRequest", "required": true, "dataType": "object" },
-                collection: { "in": "path", "name": "collection", "required": true, "dataType": "string" },
+                expressRequest: {'in': 'request', 'name': 'expressRequest', 'required': true, 'dataType': 'object'},
+                collection: {'in': 'path', 'name': 'collection', 'required': true, 'dataType': 'string'},
             };
 
             let validatedArgs: any[] = [];
@@ -138,7 +135,7 @@ export function RegisterRoutes(app: any) {
         });
 
     function authenticateMiddleware(strategy: string) {
-        return passport.authenticate(strategy, { session: false });
+        return passport.authenticate(strategy, {session: false});
     }
 
     function promiseHandler(controllerObj: any, promise: any, response: any, next: any) {
@@ -166,7 +163,7 @@ export function RegisterRoutes(app: any) {
 
     function getValidatedArgs(args: any, request: any): any[] {
         const errorFields: FieldErrors = {};
-        const values = Object.keys(args).map(function(key) {
+        const values = Object.keys(args).map(function (key) {
             const name = args[key].name;
             switch (args[key].in) {
                 case 'request':

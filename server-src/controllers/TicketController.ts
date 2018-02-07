@@ -9,6 +9,8 @@ import {Team} from '../models/Team';
 @Route('tickets')
 @Tags('Operations')
 export class TicketController extends Controller {
+    private _ticketRepository: ITicketRepository = new TicketRepository(Ticket, Team);
+
     private static resolveErrorResponse(error: MongoError | null, message: string): IErrorResponse {
         return {
             thrown: true,
@@ -16,8 +18,6 @@ export class TicketController extends Controller {
             message
         };
     }
-
-    private _ticketRepository: ITicketRepository = new TicketRepository(Ticket, Team);
 
     @Get()
     public async getTickets(): Promise<ITicketResponse[]> {
