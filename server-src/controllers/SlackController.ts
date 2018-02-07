@@ -51,6 +51,9 @@ export class SlackController {
                 case 'list-all':
                     await this._slackHelper.resolveListAllTicketsAction(slashCommandPayload, responseUrl, res);
                     break;
+                case 'help':
+                    await this._slackHelper.resolveHelpAction(slashCommandPayload, responseUrl, res);
+                    break;
                 default:
                     break;
             }
