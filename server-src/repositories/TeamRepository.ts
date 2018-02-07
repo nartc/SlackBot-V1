@@ -1,5 +1,5 @@
 import {ITeamRepository} from './ITeamRepository';
-import {TeamModel, ITeam} from '../models/Team';
+import {ITeam, TeamModel} from '../models/Team';
 import {MongoError} from 'mongodb';
 
 export class TeamRepository implements ITeamRepository {

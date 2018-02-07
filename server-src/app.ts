@@ -43,8 +43,8 @@ class App {
         (mongoose as Mongoose).Promise = global.Promise;
 
         mongoose.connect(process.env.MONGO_URI || get('mongo.mongo_uri'));
-            // .then(this.onMongoConnection)
-            // .catch(this.onMongoError);
+        // .then(this.onMongoConnection)
+        // .catch(this.onMongoError);
         this.mongooseConnection = mongoose.connection;
         this.mongooseConnection.on('connected', this.onMongoConnection);
         this.mongooseConnection.on('error', this.onMongoError);
@@ -79,7 +79,7 @@ class App {
         this.app.use('/api/docs', express.static(path.join(__dirname, '../server-src/documentation/swagger-ui')));
         // Index for Pinging
         this.app.get('/', (req: Request, res: Response) => {
-           res.sendFile(path.join(__dirname, '../public/index.html'));
+            res.sendFile(path.join(__dirname, '../public/index.html'));
         });
     }
 

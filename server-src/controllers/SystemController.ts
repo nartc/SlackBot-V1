@@ -1,18 +1,19 @@
 import {Body, Controller, Get, Path, Post, Request, Route, Security, Tags} from 'tsoa';
 import {MongoError} from 'mongodb';
-import {IErrorResponse, IMongoError} from '../models/responses/response.index';
+import {IErrorResponse, IMongoError, ISystemAuthResponse} from '../models/responses/response.index';
 import {Connection} from 'mongoose';
 import {get} from 'config';
 import {Request as ExpressRequest} from 'express';
 
 import App from '../app';
-import {ISystemAuthResponse} from '../models/responses/response.index';
 import {sign} from 'jsonwebtoken';
 import {IAuthLoginParams} from '../models/requests/request.index';
 
 @Route('auth')
 @Tags('System')
 export class SystemController extends Controller {
+    private _mongooseConnection: Connection = App.mongooseConnection;
+
     private static resolveErrorResponse(error: MongoError | null, message: string): IErrorResponse {
         return {
             thrown: true,
@@ -20,8 +21,6 @@ export class SystemController extends Controller {
             message
         };
     }
-
-    private _mongooseConnection: Connection = App.mongooseConnection;
 
     @Post()
     public async adminAuth(@Body() loginParams: IAuthLoginParams): Promise<ISystemAuthResponse> {

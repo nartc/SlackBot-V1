@@ -8,6 +8,8 @@ import {IErrorResponse, IMongoError} from '../models/responses/response.index';
 @Route('teams')
 @Tags('Operations')
 export class TeamController extends Controller {
+    private _teamRepository: ITeamRepository = new TeamRepository(Team);
+
     private static resolveErrorResponse(error: MongoError | null, message: string): IErrorResponse {
         return {
             thrown: true,
@@ -15,8 +17,6 @@ export class TeamController extends Controller {
             message
         };
     }
-
-    private _teamRepository: ITeamRepository = new TeamRepository(Team);
 
     @Get()
     public async getTeams(): Promise<ITeamVm[]> {
