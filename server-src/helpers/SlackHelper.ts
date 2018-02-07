@@ -674,33 +674,7 @@ export class SlackHelper {
                     callback_id: 'help_action',
                     color: '#439FE0',
                     title: 'uTicket Help',
-                    text: `
-                    uTicket is utilizing Slack's Slash Command API to operate. The command is ${actions.main.text} and it does have the following actions:
-                    - *Initialize Team*: Initialize the action-invoking channel as a Team in the database. Channels have to initialize themselves using this action before being able to use other actions.
-                     _Syntax_: ${actions.init.text}
-                     _Parameter_: ${actions.init.param}
-                     _Example_: ${actions.init.example}
-                     
-                    - *Create Ticket*: Create a Support Ticket that is bound to your Team.
-                     _Syntax_: ${actions.ticket.text}
-                     _Parameter_: N/A
-                     _Example_: ${actions.ticket.example}
-                     
-                    - *Resolve Ticket (Helper Only)*: Mark a Support Ticket's resolve status to true.
-                     _Syntax_: ${actions.resolve.text}
-                     _Parameter_: ${actions.resolve.param}
-                     _Example_: ${actions.resolve.example}
-                     
-                    - *List All Tickets*: List all of the action-invoking channel (Team) tickets.
-                     _Syntax_: ${actions.listAll.text}
-                     _Parameter_: N/A
-                     _Example_: ${actions.listAll.example}
-                     
-                    - *Check Single Ticket*: Check status/detail of a single ticket.
-                     _Syntax_: ${actions.checkTicket.text}
-                     _Parameter_: ${actions.checkTicket.param}
-                     _Example_: ${actions.checkTicket.example}
-                     `
+                    text: 'uTicket is utilizing Slack Slash Command API to operate. The command is `/uh` and it does have the following actions:\n\n- *Initialize Team*: Initialize the action-invoking channel as a Team in the database. Channels have to initialize themselves using this action before being able to use other actions.\n_Syntax_: `init`\n_Parameter_: `{team_name}`\n_Example_: `/uh init MyTeamName`\n\n- *Create Ticket*: Create a Support Ticket that is bound to your Team.\n_Syntax_: `ticket`\n_Parameter_: N/A\n_Example_: `/uh ticket`\n\n- *Resolve Ticket (Helper Only)*: Mark a Support Ticket resolve status to true.\n_Syntax_: `resolve`\n_Parameter_: `{ticket_number}`\n_Example_: `/uh resolve MyTeamName_1000`\n\n- *List All Tickets*: List all of the action-invoking channel (Team) tickets.\n_Syntax_: `list-all`\n_Parameter_: N/A\n_Example_: `/uh list-all`\n\n- *Check Single Ticket*: Check status/detail of a single ticket.\n_Syntax_: `check-ticket`\n_Parameter_: `{ticket_number}`\n_Example_: `/uh check-ticket MyTeamName_1000`'
                 }
             ]
         };
